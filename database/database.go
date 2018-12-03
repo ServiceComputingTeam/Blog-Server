@@ -14,16 +14,16 @@ type Blog struct{
 	ID int
 	Title string
 	Content string
-	Label string
+	Label []string
 	Owner string
 	CreateTime time.Time
 }
 
-type User struct{
-	ID int
-	Name string
-	Password string
-}
+// type User struct{
+// 	ID int
+// 	Name string
+// 	Password string
+// }
 
 func ce(err error) {
 	if err != nil {
