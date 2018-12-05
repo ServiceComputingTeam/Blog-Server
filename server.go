@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/ServiceComputingTeam/Blog-Server/jsonp"
 	"github.com/ServiceComputingTeam/Blog-Server/jwt"
 	"github.com/urfave/negroni"
 )
@@ -26,8 +27,9 @@ func main() {
 	})
 
 	n := negroni.New()
+	n.Use(jsonp.NewJsonp())
 	n.Use(jwt.NewJwt())
-	n.Use(negroni.HandlerFunc(jwt.ValidatorJWT))
+	// n.Use(negroni.HandlerFunc(jwt.ValidatorJWT))
 	n.UseHandler(mux)
 
 	n.Run(":3000")
