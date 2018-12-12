@@ -11,11 +11,80 @@
 package swagger
 
 import (
+	"encoding/json"
+	"fmt"
+	"io/ioutil"
 	"net/http"
+
+	"github.com/gorilla/mux"
 )
 
 func UserLogin(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	// TODO: cheak the username and password
+	if true {
+		w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+		w.WriteHeader(http.StatusOK)
+	} else {
+		w.WriteHeader(http.StatusBadRequest)
+	}
+}
+
+func CreateUser(w http.ResponseWriter, r *http.Request) {
+	var user User
+	re, _ := ioutil.ReadAll(r.Body)
+	err := json.Unmarshal(re, &user)
+	fmt.Println(err, user)
+	// TODO create an user
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	w.WriteHeader(http.StatusOK)
+}
+
+func GetBlogByUser(w http.ResponseWriter, r *http.Request) {
+	username := r.Header.Get("username")
+	if username == "" {
+		w.WriteHeader(http.StatusUnauthorized)
+	}
+	fmt.Println("auth:", username)
+	// TODO query blogs by auth username
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	w.WriteHeader(http.StatusOK)
+}
+
+func GetBlogByUsername(w http.ResponseWriter, r *http.Request) {
+	data := mux.Vars(r)
+	username := data["username"]
+	fmt.Println(username)
+	// TODO query blogs by username
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	w.WriteHeader(http.StatusOK)
+}
+
+func PublishBlog(w http.ResponseWriter, r *http.Request) {
+	username := r.Header.Get("username")
+	if username == "" {
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+	re, _ := ioutil.ReadAll(r.Body)
+	var newBlog Blog
+	err := json.Unmarshal(re, &newBlog)
+	fmt.Println(newBlog, err)
+	// TODO add the blog to database
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+	w.WriteHeader(http.StatusOK)
+}
+
+func UpdateUser(w http.ResponseWriter, r *http.Request) {
+	username := r.Header.Get("username")
+	if username == "" {
+		w.WriteHeader(http.StatusUnauthorized)
+		return
+	}
+	var user User
+	re, _ := ioutil.ReadAll(r.Body)
+	err := json.Unmarshal(re, &user)
+	fmt.Println(err, user)
+	// TODO update user info
+	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	w.WriteHeader(http.StatusOK)
 }

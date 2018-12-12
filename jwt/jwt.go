@@ -47,8 +47,7 @@ type Token struct {
 }
 
 func (h *JwtHandler) ServeHTTP(w http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
-	if r.Method == "GET" && r.URL.Path == "/user/login" {
-		r.ParseForm()
+	if r.Method == "PUT" && r.URL.Path == "/user/login" {
 		var username = r.URL.Query().Get("username")
 		next(w, r)
 		if strings.Contains(w.Header().Get("Content-Type"), "application/json") {
@@ -70,7 +69,6 @@ func (h *JwtHandler) ServeHTTP(w http.ResponseWriter, r *http.Request, next http
 }
 
 func ValidatorJWT(w http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
-	fmt.Println(r.URL.Path)
 	if r.URL.Path == "/user" || r.URL.Path == "/user/login" {
 		next(w, r)
 		return
@@ -82,21 +80,16 @@ func ValidatorJWT(w http.ResponseWriter, r *http.Request, next http.HandlerFunc)
 		}
 		return mySigningKey, nil
 	})
-
 	if err != nil {
-		w.WriteHeader(http.StatusUnauthorized)
-		fmt.Fprintf(w, "Unauthorized: %v", err)
+		next(w, r)
 		return
 	}
 
 	if claims, ok := token.Claims.(jwt.MapClaims); ok && token.Valid {
-		r.ParseForm()
-		r.Form.Set("username", claims["username"].(string))
-		r.PostForm.Set("username", claims["username"].(string))
+		r.Header.Set("username", claims["username"].(string))
 		fmt.Println("username:", claims["username"].(string))
 		next(w, r)
 	} else {
-		w.WriteHeader(http.StatusUnauthorized)
-		fmt.Fprintf(w, "Unauthorized: %v", err)
+		next(w, r)
 	}
 }

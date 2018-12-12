@@ -14,12 +14,12 @@ func main() {
 
 	router.PathPrefix("/user").Handler(negroni.New(
 		jwt.NewJwt(),
-		negroni.HandlerFunc(jwt.ValidatorJWT),
 		negroni.Wrap(userRouter),
 	))
 
 	n := negroni.New()
 	n.Use(jsonp.NewJsonp())
+	n.Use(negroni.HandlerFunc(jwt.ValidatorJWT))
 	n.UseHandler(router)
 	n.Run(":3000")
 }

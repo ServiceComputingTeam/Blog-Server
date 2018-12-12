@@ -62,42 +62,41 @@ func NewUserRouter() *mux.Router {
 }
 
 func Index(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("catch")
 	fmt.Fprintf(w, "Hello World!")
 }
 
 var userRoutes = Routes{
-	// Route{
-	// 	"CreateUser",
-	// 	strings.ToUpper("Post"),
-	// 	"/",
-	// 	CreateUser,
-	// },
+	Route{
+		"CreateUser",
+		strings.ToUpper("Post"),
+		"/",
+		CreateUser,
+	},
 
-	// Route{
-	// 	"GetBlogByUser",
-	// 	strings.ToUpper("Get"),
-	// 	"/blogs",
-	// 	GetBlogByUser,
-	// },
+	Route{
+		"GetBlogByUser",
+		strings.ToUpper("Get"),
+		"/blogs",
+		GetBlogByUser,
+	},
 
-	// Route{
-	// 	"PublishBlog",
-	// 	strings.ToUpper("Post"),
-	// 	"/blogs",
-	// 	PublishBlog,
-	// },
+	Route{
+		"PublishBlog",
+		strings.ToUpper("Post"),
+		"/blogs",
+		PublishBlog,
+	},
 
-	// Route{
-	// 	"UpdateUser",
-	// 	strings.ToUpper("Patch"),
-	// 	"/",
-	// 	UpdateUser,
-	// },
+	Route{
+		"UpdateUser",
+		strings.ToUpper("Patch"),
+		"/",
+		UpdateUser,
+	},
 
 	Route{
 		"UserLogin",
-		strings.ToUpper("Get"),
+		strings.ToUpper("Put"),
 		"/login",
 		UserLogin,
 	},
@@ -111,46 +110,45 @@ var routes = Routes{
 		Index,
 	},
 
-	// Route{
-	// 	"GetALLBlog",
-	// 	strings.ToUpper("Get"),
-	// 	"/blogs",
-	// 	GetALLBlog,
-	// },
+	Route{
+		"GetALLBlog",
+		strings.ToUpper("Get"),
+		"/blogs",
+		GetALLBlog,
+	},
 
-	// Route{
-	// 	"GetBlogByTitle",
-	// 	strings.ToUpper("Get"),
-	// 	"/blogs/{username}/{title}",
-	// 	GetBlogByTitle,
-	// },
+	Route{
+		"GetBlogByTitle",
+		strings.ToUpper("Get"),
+		"/blogs/{username}/{title}",
+		GetBlogByTitle,
+	},
 
-	// Route{
-	// 	"GetReviewByBlog",
-	// 	strings.ToUpper("Get"),
-	// 	"/blogs/{username}/{title}/reviews",
-	// 	GetReviewByBlog,
-	// },
+	Route{
+		"GetReviewByBlog",
+		strings.ToUpper("Get"),
+		"/blogs/{username}/{title}/reviews",
+		GetReviewByBlog,
+	},
 
-	// Route{
-	// 	"Review",
-	// 	strings.ToUpper("Post"),
-	// 	"/blogs/{username}/{title}/reviews",
-	// 	Review,
-	// },
+	Route{
+		"Review",
+		strings.ToUpper("Post"),
+		"/blogs/{username}/{title}/reviews",
+		AddReview,
+	},
 
-	// Route{
-	// 	"GetBlogByLabel",
-	// 	strings.ToUpper("Get"),
-	// 	"/labels/{labelname}/blogs",
-	// 	GetBlogByLabel,
-	// },
+	Route{
+		"GetBlogByLabel",
+		strings.ToUpper("Get"),
+		"/labels/{labelname}/blogs",
+		GetBlogByLabel,
+	},
 
-	// Route{
-	// 	"GetBlogByUsername",
-	// 	strings.ToUpper("Get"),
-	// 	"users/{username}/blogs",
-	// 	GetBlogByUsername,
-	// },
-
+	Route{
+		"GetBlogByUsername",
+		strings.ToUpper("Get"),
+		"/users/{username}/blogs",
+		GetBlogByUsername,
+	},
 }
