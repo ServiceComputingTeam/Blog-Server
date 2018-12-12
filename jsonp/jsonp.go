@@ -10,7 +10,8 @@ import (
 
 type jsonpWriter struct {
 	negroni.ResponseWriter
-	callback string
+	callback    string
+	wroteHeader bool
 }
 
 type jsonpHandler struct {
@@ -25,7 +26,8 @@ func (jsonp *jsonpHandler) ServeHTTP(w http.ResponseWriter, r *http.Request, nex
 	if callback != "" {
 		nw := negroni.NewResponseWriter(w)
 		newWriter := &jsonpWriter{ResponseWriter: nw,
-			callback: callback}
+			callback:    callback,
+			wroteHeader: false}
 		next(newWriter, r)
 	} else {
 		next(w, r)
@@ -36,8 +38,17 @@ type jsonpWrap struct {
 	Data string `json:"data"`
 }
 
-func (jsonp *jsonpWriter) Write(b []byte) (int, error) {
+func (jsonp *jsonpWriter) WriteHeader(code int) {
 	headers := jsonp.ResponseWriter.Header()
+	headers.Set("Content-Type", "application/javascript")
+	jsonp.ResponseWriter.WriteHeader(code)
+	jsonp.wroteHeader = true
+}
+
+func (jsonp *jsonpWriter) Write(b []byte) (int, error) {
+	if !jsonp.wroteHeader {
+		jsonp.WriteHeader(http.StatusOK)
+	}
 	var callbackFunc string
 	if json.Valid(b) {
 		callbackFunc = fmt.Sprintf("%s(%s)", jsonp.callback, string(b))
@@ -49,6 +60,5 @@ func (jsonp *jsonpWriter) Write(b []byte) (int, error) {
 			callbackFunc = fmt.Sprintf("%s(%s)", jsonp.callback, string(json))
 		}
 	}
-	headers.Set("Content-Type", "application/javascript")
 	return jsonp.ResponseWriter.Write([]byte(callbackFunc))
 }

@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strings"
 	"time"
 
 	jwt "github.com/dgrijalva/jwt-go"
@@ -46,11 +47,11 @@ type Token struct {
 }
 
 func (h *JwtHandler) ServeHTTP(w http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
-	if r.Method == "POST" && r.URL.Path == "/login" {
+	if r.Method == "GET" && r.URL.Path == "/user/login" {
 		r.ParseForm()
-		var username = r.Form.Get("username")
+		var username = r.URL.Query().Get("username")
 		next(w, r)
-		if w.Header().Get("Content-Type") == "application/json" {
+		if strings.Contains(w.Header().Get("Content-Type"), "application/json") {
 			if tokenString, err := newClaims(username); err != nil {
 				fmt.Fprint(w, err)
 			} else {
@@ -58,7 +59,8 @@ func (h *JwtHandler) ServeHTTP(w http.ResponseWriter, r *http.Request, next http
 				if err != nil {
 					fmt.Fprint(w, err)
 				} else {
-					fmt.Fprint(w, string(json))
+					w.Write(json)
+					fmt.Println("Token: ", string(json))
 				}
 			}
 		}
@@ -68,6 +70,12 @@ func (h *JwtHandler) ServeHTTP(w http.ResponseWriter, r *http.Request, next http
 }
 
 func ValidatorJWT(w http.ResponseWriter, r *http.Request, next http.HandlerFunc) {
+	fmt.Println(r.URL.Path)
+	if r.URL.Path == "/user" || r.URL.Path == "/user/login" {
+		next(w, r)
+		return
+	}
+
 	token, err := request.ParseFromRequest(r, request.AuthorizationHeaderExtractor, func(token *jwt.Token) (interface{}, error) {
 		if _, ok := token.Method.(*jwt.SigningMethodHMAC); !ok {
 			return nil, fmt.Errorf("Unexpected signing method: %v", token.Header["alg"])
@@ -85,7 +93,7 @@ func ValidatorJWT(w http.ResponseWriter, r *http.Request, next http.HandlerFunc)
 		r.ParseForm()
 		r.Form.Set("username", claims["username"].(string))
 		r.PostForm.Set("username", claims["username"].(string))
-		fmt.Println(claims)
+		fmt.Println("username:", claims["username"].(string))
 		next(w, r)
 	} else {
 		w.WriteHeader(http.StatusUnauthorized)
