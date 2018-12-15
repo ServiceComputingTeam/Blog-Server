@@ -11,6 +11,7 @@
 package swagger
 
 import (
+	"encoding/json"
 	"fmt"
 	"net/http"
 
@@ -21,7 +22,15 @@ func GetBlogByLabel(w http.ResponseWriter, r *http.Request) {
 	data := mux.Vars(r)
 	label := data["labelname"]
 	fmt.Println("labelname:", label)
-	// TODO query blogs by label
-	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-	w.WriteHeader(http.StatusOK)
+	// FIXME: query blogs by label
+	if blogs, err := DBgetBlogsByLabelname(label); err == nil {
+		w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+		var temp = Label{Labelname: label,
+			Blogs: *blogs}
+		buf, _ := json.Marshal(temp)
+		w.Write(buf)
+		w.WriteHeader(http.StatusOK)
+	} else {
+		w.WriteHeader(http.StatusBadRequest)
+	}
 }

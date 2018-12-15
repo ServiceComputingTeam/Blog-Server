@@ -1,7 +1,7 @@
 /*
  * Blog for service computing
  *
- *   
+ *
  *
  * API version: 1.0.0
  * Contact: 895118352@qq.com
@@ -11,8 +11,7 @@
 package swagger
 
 type User struct {
-
-	Id int64 `json:"id,omitempty"`
+	Id uint64 `json:"id,omitempty"`
 
 	Username string `json:"username,omitempty"`
 
@@ -20,7 +19,7 @@ type User struct {
 
 	Password string `json:"password,omitempty"`
 
-	Blog []Blog `json:"blog,omitempty"`
+	BlogId []uint64 `json:"blogId,omitempty"`
 
 	Phone string `json:"phone,omitempty"`
 }

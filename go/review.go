@@ -1,7 +1,7 @@
 /*
  * Blog for service computing
  *
- *   
+ *
  *
  * API version: 1.0.0
  * Contact: 895118352@qq.com
@@ -15,8 +15,7 @@ import (
 )
 
 type Review struct {
-
-	Id int64 `json:"id,omitempty"`
+	Id uint64 `json:"id,omitempty"`
 
 	Content string `json:"content,omitempty"`
 

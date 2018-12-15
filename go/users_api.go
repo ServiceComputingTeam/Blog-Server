@@ -15,13 +15,21 @@ import (
 	"fmt"
 	"io/ioutil"
 	"net/http"
+	"time"
 
 	"github.com/gorilla/mux"
 )
 
 func UserLogin(w http.ResponseWriter, r *http.Request) {
-	// TODO: cheak the username and password
-	if true {
+	// FIXME:: cheak the username and password
+	username := r.URL.Query().Get("username")
+	password := r.URL.Query().Get("password")
+	if username == "" || password == "" {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	if flag, _ := DBcheakUsernameAndPassWord(username, password); flag {
 		w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 		w.WriteHeader(http.StatusOK)
 	} else {
@@ -34,29 +42,53 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 	re, _ := ioutil.ReadAll(r.Body)
 	err := json.Unmarshal(re, &user)
 	fmt.Println(err, user)
-	// TODO create an user
-	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-	w.WriteHeader(http.StatusOK)
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+	// FIXME: create an user
+	if newUser, err := DBCreateUser(&user); err == nil {
+		w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+		buf, _ := json.Marshal(newUser)
+		w.Write(buf)
+		w.WriteHeader(http.StatusCreated)
+	} else {
+		w.WriteHeader(http.StatusBadRequest)
+	}
 }
 
 func GetBlogByUser(w http.ResponseWriter, r *http.Request) {
 	username := r.Header.Get("username")
 	if username == "" {
 		w.WriteHeader(http.StatusUnauthorized)
+		return
 	}
 	fmt.Println("auth:", username)
-	// TODO query blogs by auth username
-	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-	w.WriteHeader(http.StatusOK)
+	// FIXME: query blogs by auth username
+	if blogs, err := DBgetBlogByAuthor(username); err == nil {
+		w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+		buf, _ := json.Marshal(blogs)
+		w.Write(buf)
+		w.WriteHeader(http.StatusOK)
+	} else {
+		w.WriteHeader(http.StatusBadRequest)
+	}
+
 }
 
 func GetBlogByUsername(w http.ResponseWriter, r *http.Request) {
 	data := mux.Vars(r)
 	username := data["username"]
 	fmt.Println(username)
-	// TODO query blogs by username
-	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-	w.WriteHeader(http.StatusOK)
+	// FIXME: query blogs by username
+	if blogs, err := DBgetBlogByAuthor(username); err == nil {
+		w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+		buf, _ := json.Marshal(blogs)
+		w.Write(buf)
+		w.WriteHeader(http.StatusOK)
+	} else {
+		w.WriteHeader(http.StatusBadRequest)
+	}
 }
 
 func PublishBlog(w http.ResponseWriter, r *http.Request) {
@@ -68,10 +100,18 @@ func PublishBlog(w http.ResponseWriter, r *http.Request) {
 	re, _ := ioutil.ReadAll(r.Body)
 	var newBlog Blog
 	err := json.Unmarshal(re, &newBlog)
+	newBlog.Createtime = time.Now()
+	newBlog.Owner = username
 	fmt.Println(newBlog, err)
-	// TODO add the blog to database
-	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
-	w.WriteHeader(http.StatusOK)
+	// FIXME: add the blog to database
+	if newBlog, err := DBCreateBlog(&newBlog); err == nil {
+		w.Header().Set("Content-Type", "application/json; charset=UTF-8")
+		buf, _ := json.Marshal(newBlog)
+		w.Write(buf)
+		w.WriteHeader(http.StatusOK)
+	} else {
+		w.WriteHeader(http.StatusBadRequest)
+	}
 }
 
 func UpdateUser(w http.ResponseWriter, r *http.Request) {
@@ -84,7 +124,7 @@ func UpdateUser(w http.ResponseWriter, r *http.Request) {
 	re, _ := ioutil.ReadAll(r.Body)
 	err := json.Unmarshal(re, &user)
 	fmt.Println(err, user)
-	// TODO update user info
+	// TODO: update user info
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	w.WriteHeader(http.StatusOK)
 }
