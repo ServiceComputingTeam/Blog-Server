@@ -28,8 +28,8 @@ func GetBlogByLabel(w http.ResponseWriter, r *http.Request) {
 		var temp = Label{Labelname: label,
 			Blogs: *blogs}
 		buf, _ := json.Marshal(temp)
-		w.Write(buf)
 		w.WriteHeader(http.StatusOK)
+		w.Write(buf)
 	} else {
 		w.WriteHeader(http.StatusBadRequest)
 	}

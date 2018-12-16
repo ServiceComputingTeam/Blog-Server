@@ -7,6 +7,7 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"os"
 
 	"github.com/boltdb/bolt"
 )
@@ -16,6 +17,16 @@ const (
 )
 
 func init() {
+	// if _, err := os.Stat("./data"); os.IsNotExist(err) {
+	// 	err = os.Mkdir("./data", 0777)
+	// 	if err != nil {
+	// 		log.Fatal(err)
+	// 	}
+	// }
+	err := os.MkdirAll("./data", 0777)
+	if err != nil {
+		log.Fatal(err)
+	}
 	db, err := bolt.Open(DBPATH, 0600, nil)
 	if err != nil {
 		log.Fatal(err)
@@ -29,6 +40,7 @@ func init() {
 		}
 		return nil
 	})
+
 	defer db.Close()
 }
 

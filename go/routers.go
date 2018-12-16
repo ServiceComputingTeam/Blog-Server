@@ -11,7 +11,6 @@
 package swagger
 
 import (
-	"fmt"
 	"net/http"
 	"strings"
 
@@ -62,7 +61,7 @@ func NewUserRouter() *mux.Router {
 }
 
 func Index(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintf(w, "Hello World!")
+	http.ServeFile(w, r, "./index.html")
 }
 
 var userRoutes = Routes{

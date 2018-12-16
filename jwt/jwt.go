@@ -4,11 +4,11 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
-	"strings"
 	"time"
 
 	jwt "github.com/dgrijalva/jwt-go"
 	"github.com/dgrijalva/jwt-go/request"
+	"github.com/urfave/negroni"
 )
 
 const (
@@ -50,7 +50,8 @@ func (h *JwtHandler) ServeHTTP(w http.ResponseWriter, r *http.Request, next http
 	if r.Method == "PUT" && r.URL.Path == "/user/login" {
 		var username = r.URL.Query().Get("username")
 		next(w, r)
-		if strings.Contains(w.Header().Get("Content-Type"), "application/json") {
+		res := w.(negroni.ResponseWriter)
+		if res.Status() == 200 {
 			if tokenString, err := newClaims(username); err != nil {
 				fmt.Fprint(w, err)
 			} else {

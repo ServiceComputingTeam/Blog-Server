@@ -33,8 +33,8 @@ func GetALLBlog(w http.ResponseWriter, r *http.Request) {
 	if blogs, err := DBgetAllBlog(offset, pages); err == nil {
 		w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 		buf, _ := json.Marshal(blogs)
-		w.Write(buf)
 		w.WriteHeader(http.StatusOK)
+		w.Write(buf)
 	} else {
 		w.WriteHeader(http.StatusBadRequest)
 	}
@@ -49,8 +49,8 @@ func GetBlogByTitle(w http.ResponseWriter, r *http.Request) {
 	if blog, err := DBgetBolgByBlogTitleAndAuthor(title, username); err == nil {
 		w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 		buf, _ := json.Marshal(blog)
-		w.Write(buf)
 		w.WriteHeader(http.StatusOK)
+		w.Write(buf)
 	} else {
 		w.WriteHeader(http.StatusBadRequest)
 	}
@@ -65,8 +65,8 @@ func GetReviewByBlog(w http.ResponseWriter, r *http.Request) {
 	if reviews, err := DBgetReviewByBlogTitleAndAuthor(title, username); err == nil {
 		w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 		buf, _ := json.Marshal(reviews)
-		w.Write(buf)
 		w.WriteHeader(http.StatusOK)
+		w.Write(buf)
 	} else {
 		w.WriteHeader(http.StatusBadRequest)
 	}
@@ -92,8 +92,8 @@ func AddReview(w http.ResponseWriter, r *http.Request) {
 	if review, err := DBCreateReview(&review); err == nil {
 		w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 		buf, _ := json.Marshal(review)
-		w.Write(buf)
 		w.WriteHeader(http.StatusOK)
+		w.Write(buf)
 	} else {
 		w.WriteHeader(http.StatusBadRequest)
 	}

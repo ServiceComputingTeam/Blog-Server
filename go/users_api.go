@@ -50,8 +50,8 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 	if newUser, err := DBCreateUser(&user); err == nil {
 		w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 		buf, _ := json.Marshal(newUser)
-		w.Write(buf)
 		w.WriteHeader(http.StatusCreated)
+		w.Write(buf)
 	} else {
 		w.WriteHeader(http.StatusBadRequest)
 	}
@@ -68,8 +68,8 @@ func GetBlogByUser(w http.ResponseWriter, r *http.Request) {
 	if blogs, err := DBgetBlogByAuthor(username); err == nil {
 		w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 		buf, _ := json.Marshal(blogs)
-		w.Write(buf)
 		w.WriteHeader(http.StatusOK)
+		w.Write(buf)
 	} else {
 		w.WriteHeader(http.StatusBadRequest)
 	}
@@ -84,8 +84,8 @@ func GetBlogByUsername(w http.ResponseWriter, r *http.Request) {
 	if blogs, err := DBgetBlogByAuthor(username); err == nil {
 		w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 		buf, _ := json.Marshal(blogs)
-		w.Write(buf)
 		w.WriteHeader(http.StatusOK)
+		w.Write(buf)
 	} else {
 		w.WriteHeader(http.StatusBadRequest)
 	}
@@ -107,8 +107,8 @@ func PublishBlog(w http.ResponseWriter, r *http.Request) {
 	if newBlog, err := DBCreateBlog(&newBlog); err == nil {
 		w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 		buf, _ := json.Marshal(newBlog)
-		w.Write(buf)
 		w.WriteHeader(http.StatusOK)
+		w.Write(buf)
 	} else {
 		w.WriteHeader(http.StatusBadRequest)
 	}
